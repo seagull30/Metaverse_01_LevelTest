@@ -79,5 +79,10 @@ int main()
 		}
 		std::cout << std::endl;
 	}
+	for (int i = 0; i < arraySize; ++i)
+	{
+		delete[] arr[i];
+	}
+	delete[] arr;
 	return 0;
 }
