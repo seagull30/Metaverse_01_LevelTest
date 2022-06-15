@@ -11,24 +11,20 @@
 // 빙고판의 랜덤한 자리에 숫자를 순서대로 넣고 만약 그자리에 다른 숫자가 들어있다면 다시 자리를 찾는다.
 // 빙고가 되면 라인의 합이 0이 된다는것을 이용해 마지막에 고른 숫자의 행과 열을 체크해서 0이되면 빙고의 카운트를 올린다.
 
-
+#define BINGO_SIZE 5
 
 int main()
 {
 	srand(time(NULL));
 	//빙고판 랜덤 생성
-	int bingoPan[5][5] = {};
-	for (int i = 1; i <= 25; ++i)
+	int bingoPan[BINGO_SIZE][BINGO_SIZE] = {};
+	for (int i = 1; i <= BINGO_SIZE * BINGO_SIZE;)
 	{
-		int row = rand() % 5;
-		int column = rand() % 5;
-		if (bingoPan[row][column] != 0)
+		int randnum = rand() % (BINGO_SIZE * BINGO_SIZE);
+		if (bingoPan[randnum / BINGO_SIZE][randnum % BINGO_SIZE] == 0)
 		{
-			--i;
-		}
-		else
-		{
-			bingoPan[row][column] = i;
+			bingoPan[randnum / BINGO_SIZE][randnum % BINGO_SIZE] = i;
+			++i;
 		}
 	}
 
@@ -36,9 +32,9 @@ int main()
 	while (true)
 	{
 		// 빙고판 출력
-		for (int row = 0; row < 5; ++row)
+		for (int row = 0; row < BINGO_SIZE; ++row)
 		{
-			for (int column = 0; column < 5; ++column)
+			for (int column = 0; column < BINGO_SIZE; ++column)
 			{
 				if (bingoPan[row][column] == 0)
 				{
@@ -58,11 +54,12 @@ int main()
 		std::cout << "숫자를 입력해 주세요 : ";
 		std::cin >> inputNum;
 
-		int x = 6;
-		int y = 6;
-		for (int row = 0; row < 5; ++row)
+		int x = BINGO_SIZE + 1;
+		int y = BINGO_SIZE + 1;
+		for (int row = 0; row < BINGO_SIZE; ++row)
 		{
-			for (int column = 0; column < 5; ++column)
+			bool isExit = false;
+			for (int column = 0; column < BINGO_SIZE; ++column)
 			{
 
 				if (bingoPan[row][column] == inputNum)
@@ -70,46 +67,51 @@ int main()
 					bingoPan[row][column] = 0;
 					x = column;
 					y = row;
+					isExit = true;
+				}
+				if (isExit)
+				{
+					break;
 				}
 			}
 		}
-		if (x == y == 6)
+		if (x == BINGO_SIZE + 1 || y == BINGO_SIZE + 1)
 		{
 			system("cls");
 			continue;
 		}
 
 		// 빙고 체크
-		int rowbingocheck = 0;
-		for (int i = 0; i < 5; ++i)
+		int rowBingoCheck = 0;
+		for (int i = 0; i < BINGO_SIZE; ++i)
 		{
-			rowbingocheck += bingoPan[y][i];
+			rowBingoCheck += bingoPan[y][i];
 		}
-		if (rowbingocheck == 0)
+		if (rowBingoCheck == 0)
 			++bingo;
 
-		int columnbingocheck = 0;
-		for (int i = 0; i < 5; ++i)
+		int columnBingoCheck = 0;
+		for (int i = 0; i < BINGO_SIZE; ++i)
 		{
-			columnbingocheck += bingoPan[i][x];
+			columnBingoCheck += bingoPan[i][x];
 		}
-		if (columnbingocheck == 0)
+		if (columnBingoCheck == 0)
 			++bingo;
 
 		if (x == y)
 		{
 			int leftDiagonalCheak = 0;
-			for (int i = 0; i < 5; ++i)
+			for (int i = 0; i < BINGO_SIZE; ++i)
 				leftDiagonalCheak += bingoPan[i][i];
 			if (leftDiagonalCheak == 0)
 				++bingo;
 		}
 
-		if (x + y == 4)
+		if (x + y == BINGO_SIZE - 1)
 		{
 			int rightDiagonalCheak = 0;
-			for (int i = 0; i < 5; ++i)
-				rightDiagonalCheak += bingoPan[i][4 - i];
+			for (int i = 0; i < BINGO_SIZE; ++i)
+				rightDiagonalCheak += bingoPan[i][BINGO_SIZE - 1 - i];
 			if (rightDiagonalCheak == 0)
 				++bingo;
 		}
